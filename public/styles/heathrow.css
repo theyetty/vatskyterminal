@@ -1,0 +1,273 @@
+#departuresTable th,
+#departuresTable td,
+#arrivalsTable th,
+#arrivalsTable td {
+  width: 30%;
+  /* Each column takes up 1% of the table width */
+}
+
+@media (max-width: 600px) {
+  body {
+    font-size: 16px;
+  }
+
+  .header {
+    font-size: 24px;
+    padding: 5px;
+  }
+
+  #airportInput,
+  button {
+    font-size: 16px;
+    padding: 5px 10px;
+  }
+
+  #airportSelectionDropdown {
+    height: 2.5em;
+    width: 90%;
+  }
+
+  .modal-content {
+    padding: 10px;
+  }
+
+  table,
+  th,
+  td {
+    font-size: 14px;
+  }
+
+  /* Adjust table layout for smaller screens */
+  #departuresTable,
+  #arrivalsTable {
+    display: block;
+    overflow-x: auto;
+  }
+}
+
+@media (max-width: 600px) {
+  .search-container {
+    flex-direction: column;
+    align-items: stretch;
+    /* Make input and button full width */
+  }
+
+  #airportInput,
+  button {
+    margin: 5px 0;
+    /* Add some vertical spacing */
+  }
+}
+
+@media (max-width: 600px) {
+
+  button,
+  #airportSelectionDropdown {
+    min-height: 40px;
+    /* Easier to tap */
+  }
+}
+
+.header {
+  background-color: #FFCD01;
+  color: black;
+  padding: 10px;
+  font-size: 32px;
+  display: flex;
+  align-items: center;
+}
+
+.header i {
+  margin-left: 15px;
+}
+
+body {
+  background-color: black;
+  color: white;
+  font-family: 'Courier Prime', monospace;
+  font-size: 24px;
+  text-transform: uppercase;
+}
+
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th,
+td {
+  padding: 10px;
+  text-align: left;
+}
+
+th {
+  cursor: pointer;
+}
+
+td:first-child {
+  color: #FFFF00;
+}
+
+.loading-icon {
+  display: none;
+  /* Initially hide the loading icon */
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 9999;
+}
+
+#countdownContainer{
+  float: right;
+}
+
+
+
+.loading-icon i {
+  font-size: 50px;
+  /* Adjust the size of the loading icon */
+}
+
+.white {
+  color: white; /* Adjust the color as needed */
+}
+
+.red {
+  color: red; /* Adjust the color as needed */
+}
+
+.green {
+  color: green; /* Adjust the color as needed */
+}
+
+.gray {
+  color: gray; /* Adjust the color as needed */
+}
+
+.blue {
+  color: blue; /* Adjust the color as needed */
+}
+
+
+#airportInput {
+  width: 50%
+}
+
+.orange {
+  color: orange !important;
+}
+
+.search-container {
+  display: flex;
+  justify-content: center;
+  /* Center horizontally */
+  align-items: center;
+  /* Center vertically */
+  width: 100%;
+}
+
+#airportInput,
+button {
+  font-size: 20px;
+  /* Larger font size */
+  padding: 10px 20px;
+  /* Larger padding for bigger appearance */
+  margin-right: 10px;
+  /* Space between input and button */
+}
+
+button {
+  cursor: pointer;
+  /* Change cursor to pointer on hover */
+  background-color: #FFCD01;
+  /* Button background color */
+  border: none;
+  /* Remove border */
+  border-radius: 5px;
+  /* Rounded corners */
+  color: black;
+  /* Text color */
+  font-weight: bold;
+  /* Bold text */
+  transition: background-color 0.3s;
+  /* Smooth background color transition */
+}
+
+button:hover {
+  background-color: #E5B700;
+  /* Darker shade on hover */
+}
+
+#airportInput {
+  border: 2px solid #FFCD01;
+  /* Solid border matching the button color */
+  border-radius: 5px;
+  /* Rounded corners */
+}
+
+#airportSelectionContainer {
+  display: none;
+  /* Hidden by default */
+  position: relative;
+  /* Positioned relative to the viewport */
+  top: 0;
+  left: 0;
+  width: 100%;
+  /* Full width */
+  height: 100%;
+  /* Full height */
+  display: flex;
+  justify-content: center;
+  /* Center horizontally */
+  align-items: center;
+  /* Center vertically */
+  background-color: rgba(0, 0, 0, 0.5);
+  /* Semi-transparent overlay */
+  z-index: 101;
+  /* Ensures it's above other elements */
+}
+
+#airportSelectionDropdown {
+  height: 3.5em;
+  width: 15%;
+  text-align: center;
+}
+
+.modal-content {
+  background-color: #fff;
+  /* Background color for the modal */
+  padding: 20px;
+  /* Padding around the modal content */
+  border-radius: 10px;
+  /* Optional: Rounded corners for the modal */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  /* Optional: Adds some shadow for depth */
+  text-align: center;
+  /* Ensures text and elements inside are centered */
+  width: auto;
+  /* Adjust width as needed */
+  max-width: 100%;
+  /* Ensures the modal is not wider than the viewport */
+}
+
+#airportSelectionContainer h3 {
+  color: #000;
+  /* Text color for the modal heading */
+}
+
+#airportSelectionContainer>* {
+  margin: 0 10px;
+  /* Adds some spacing between child elements of the backdrop */
+}
+
+#airportSelectionDropdown,
+#airportSelectionContainer button {
+  margin-top: 10px;
+  /* Adds some space above the dropdown and button */
+  width: auto;
+  /* Adjust width as needed */
+  display: inline-block;
+  /* Aligns elements in a line */
+}

@@ -1,0 +1,67 @@
+<style>
+
+</style>
+<link href="https://fonts.googleapis.com/css2?family=Courier+Prime:wght@700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css">
+<link rel="stylesheet" href="/styles/heathrow.css">
+<div id="countdownContainer">
+  Refresh in <span id="countdown">30</span>
+</div>
+<form id="airport-search-form">
+  <input type="text" id="airportInput" placeholder="Search for an airport...">
+  <button type="submit">Search</button>
+</form>
+
+<div id="airportSelectionMessage" style="display: none;">Multiple airports found, please select one:</div>
+<select id="airportSelection" style="display: none;"></select>
+<button id="selectAirportButton" style="display: none;">Go to Airport</button>
+
+
+<!-- Departure Board -->
+<div class="board departures">
+  <div class="header">
+    <i class="fas fa-plane-departure"></i>
+    <h2>Departures</h2>
+  </div>
+  <table>
+    <thead>
+      <tr>
+        <th>Time</th>
+        <th>Airline</th>
+        <th>Flight Number</th>
+        <th>Departing To</th>
+        <th>Remark</th>
+      </tr>
+    </thead>
+    <tbody>
+      <!-- Data rows will be inserted here by JavaScript -->
+    </tbody>
+  </table>
+</div>
+
+<!-- Arrival Board -->
+<div class="board arrivals">
+  <div class="header">
+    <i class="fas fa-plane-arrival"></i>
+    <h2>Arrivals</h2>
+  </div>
+  <table>
+    <thead>
+      <tr>
+        <th>Time</th>
+        <th>Airline</th>
+        <th>Flight Number</th>
+        <th>Arriving From</th>
+        <th>Remark</th>
+      </tr>
+    </thead>
+    <tbody>
+      <!-- Data rows will be inserted here by JavaScript -->
+    </tbody>
+  </table>
+</div>
+
+
+
+<script src="js/script.js"></script>
+<script src="js/data.js"></script>
