@@ -2,12 +2,12 @@ const express = require('express');
 const path = require('path');
 const fs = require('fs');
 const cors = require('cors');
-// const { fetchVatsimData } = require('./services/vatsimService');
-// const {  searchAirports, fetchAllAirports } = require('./services/airportService');
-// const { fetchAllAirlines } = require('./services/airlineService');
-// const { getPilotStatus } = require('./utils/distanceUtils');
-// const { calculateExpectedArrivalUTC, hhmmToUTCTime,UTCTimeToHHMM, calculateTimeRemaining } = require('./utils/dateUtils');
-// const { Country, State } = require('country-state-city');
+const { fetchVatsimData } = require('./services/vatsimService');
+const {  searchAirports, fetchAllAirports } = require('./services/airportService');
+const { fetchAllAirlines } = require('./services/airlineService');
+const { getPilotStatus } = require('./utils/distanceUtils');
+const { calculateExpectedArrivalUTC, hhmmToUTCTime,UTCTimeToHHMM, calculateTimeRemaining } = require('./utils/dateUtils');
+const { Country, State } = require('country-state-city');
 
 const app = express();
 const PORT = 3000;
@@ -16,7 +16,7 @@ app.use(cors());
 
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
-// app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, 'public')));
 app.set('/data', path.join(__dirname, 'data'));
 
 
