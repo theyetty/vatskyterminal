@@ -182,7 +182,7 @@ app.get('/:icao', async (req, res) => {
 
 
 app.get('/', (req, res) => {
-    res.render('home');
+    res.render('index');
 });
 
 
