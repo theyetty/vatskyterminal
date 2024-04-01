@@ -75,7 +75,6 @@ function getPilotStatus(
     const isInAir = pilot.altitude > 1000;
 
     // At the departure airport
-    console.log(`${pilot.callsign} is ${timeRemainingUntilDeparture}` );
     if (timeRemainingUntilDeparture < 0 && pilot.groundspeed == 0 && distanceToArrival > threshold) {
         const delayMinutes = Math.abs(timeRemainingUntilDeparture);
         return { statusText: 'DEPARTURE_DELAYED', delayMinutes: delayMinutes };
