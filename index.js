@@ -36,18 +36,18 @@ app.get('/api/airports/search', async (req, res) => {
     }
 });
 
-// app.get('/api/flights/:icao', async (req, res) => {
-//     const icao = req.params.icao.toUpperCase();
+app.get('/api/flights/:icao', async (req, res) => {
+    const icao = req.params.icao.toUpperCase();
 
-//     try {
-//         const flightData = await getFlight(icao);
+    try {
+        const flightData = await getFlight(icao);
 
-//         res.json(flightData);
-//     } catch (error) {
-//         console.error("Error fetching flight data for ICAO:", icao, error);
-//         res.status(500).send('Error fetching flight data');
-//     }
-// });
+        res.json(flightData);
+    } catch (error) {
+        console.error("Error fetching flight data for ICAO:", icao, error);
+        res.status(500).send('Error fetching flight data');
+    }
+});
 
 async function getFlight(icao){
 
@@ -163,21 +163,21 @@ function getStateName(airportData) {
     return "Unknown State";
 }
 
-// app.get('/:icao', async (req, res) => {
-//     const icao = req.params.icao.toUpperCase();
+app.get('/:icao', async (req, res) => {
+    const icao = req.params.icao.toUpperCase();
 
-//     try {
-//         const { departures, arrivals } = await getFlight(icao);
+    try {
+        const { departures, arrivals } = await getFlight(icao);
 
-//         departures.sort((a, b) => new Date(a.departure.departureTime) - new Date(b.departure.departureTime));
-//         arrivals.sort((a, b) => new Date(a.arrival.arrivalTime) - new Date(b.arrival.arrivalTime));
+        departures.sort((a, b) => new Date(a.departure.departureTime) - new Date(b.departure.departureTime));
+        arrivals.sort((a, b) => new Date(a.arrival.arrivalTime) - new Date(b.arrival.arrivalTime));
 
-//         res.render('airport', { departures, arrivals });
-//     } catch (error) {
-//         console.error("Error fetching flight data for ICAO:", error);
-//         res.status(500).send('Error fetching flight data');
-//     }
-// });
+        res.render('airport', { departures, arrivals });
+    } catch (error) {
+        console.error("Error fetching flight data for ICAO:", error);
+        res.status(500).send('Error fetching flight data');
+    }
+});
 
 
 
