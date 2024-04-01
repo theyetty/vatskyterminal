@@ -16,7 +16,7 @@ app.use(cors());
 
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
-app.use(express.static(path.join(__dirname, 'public')));
+// app.use(express.static(path.join(__dirname, 'public')));
 app.set('/data', path.join(__dirname, 'data'));
 
 
@@ -181,8 +181,7 @@ app.set('/data', path.join(__dirname, 'data'));
 
 
 
-app.
-get('/', (req, res) => {
+app.get('/', (req, res) => {
     res.render('index');
 });
 
