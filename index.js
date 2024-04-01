@@ -20,34 +20,34 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.set('/data', path.join(__dirname, 'data'));
 
 
-// app.get('/api/airports/search', async (req, res) => {
-//     const { q } = req.query;
+app.get('/api/airports/search', async (req, res) => {
+    const { q } = req.query;
 
-//     if (!q) {
-//         return res.json([]);
-//     }
+    if (!q) {
+        return res.json([]);
+    }
 
-//     try {
-//         const matchingAirports = await searchAirports(q);
-//         res.json(matchingAirports);
-//     } catch (error) {
-//         console.error("Error handling airports search:", error);
-//         res.status(500).send('Error handling airports search');
-//     }
-// });
+    try {
+        const matchingAirports = await searchAirports(q);
+        res.json(matchingAirports);
+    } catch (error) {
+        console.error("Error handling airports search:", error);
+        res.status(500).send('Error handling airports search');
+    }
+});
 
-// app.get('/api/flights/:icao', async (req, res) => {
-//     const icao = req.params.icao.toUpperCase();
+app.get('/api/flights/:icao', async (req, res) => {
+    const icao = req.params.icao.toUpperCase();
 
-//     try {
-//         const flightData = await getFlight(icao);
+    try {
+        const flightData = await getFlight(icao);
 
-//         res.json(flightData);
-//     } catch (error) {
-//         console.error("Error fetching flight data for ICAO:", icao, error);
-//         res.status(500).send('Error fetching flight data');
-//     }
-// });
+        res.json(flightData);
+    } catch (error) {
+        console.error("Error fetching flight data for ICAO:", icao, error);
+        res.status(500).send('Error fetching flight data');
+    }
+});
 
 // async function getFlight(icao){
 
