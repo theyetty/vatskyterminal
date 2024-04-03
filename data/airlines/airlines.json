@@ -12665,7 +12665,8 @@
     "iata": "",
     "icao": "SHT",
     "callsign": "SHUTTLE",
-    "country": "United Kingdom"
+    "country": "United Kingdom",
+    "logo": "https://images.kiwi.com/airlines/64/BA.png"
   },
   "SKH": {
     "name": "British Sky Broadcasting",
