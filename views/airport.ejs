@@ -1,67 +1,138 @@
 <style>
 
 </style>
-<link href="https://fonts.googleapis.com/css2?family=Courier+Prime:wght@700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400&display=swap">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css">
 <link rel="stylesheet" href="/styles/heathrow.css">
+
+<div id="main-header">
+  <%= departures[0] && departures[0].departure && departures[0].departure.airportName ? departures[0].departure.airportName : (arrivals[0] && arrivals[0].arrival && arrivals[0].arrival.airportName ? arrivals[0].arrival.airportName : 'Unknown') %>
+</div>
+<div class="top-container">
+
+  <div class="search-container">
+    <form id="airport-search-form">
+      
+      <input type="text" id="airportInput" placeholder="Search for an airport...">
+      <button type="submit">Search</button>
+      
+    </form>
+    
+  </div>
+</div>
 <div id="countdownContainer">
   Refresh in <span id="countdown">30</span>
 </div>
-<form id="airport-search-form">
-  <input type="text" id="airportInput" placeholder="Search for an airport...">
-  <button type="submit">Search</button>
-</form>
+<div class="center-container">
+  <div id="airportSelectionMessage" style="display: none;">Multiple airports found, please select one:</div>
+  <select id="airportSelection" style="display: none;"></select>
+  <button id="selectAirportButton" style="display: none;">Go to Airport</button>
+</div>
 
-<div id="airportSelectionMessage" style="display: none;">Multiple airports found, please select one:</div>
-<select id="airportSelection" style="display: none;"></select>
-<button id="selectAirportButton" style="display: none;">Go to Airport</button>
 
 
 <!-- Departure Board -->
-<div class="board departures">
-  <div class="header">
-    <i class="fas fa-plane-departure"></i>
-    <h2>Departures</h2>
+
+<div class="boards-container">
+  <div class="board departures">
+    <div class="header">
+      <h2>Departures</h2>
+      <div id="icon">
+      <i class="fas fa-plane-departure"></i>
+      </div>
+    </div>
+    <table>
+      <thead>
+        <tr>
+          <th>Time</th>
+          <th>Destination</th>
+          <th>Airline</th>
+          <th>Flight</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- Data rows will be inserted here by JavaScript -->
+      </tbody>
+    </table>
   </div>
-  <table>
-    <thead>
-      <tr>
-        <th>Time</th>
-        <th>Airline</th>
-        <th>Flight Number</th>
-        <th>Departing To</th>
-        <th>Remark</th>
-      </tr>
-    </thead>
-    <tbody>
-      <!-- Data rows will be inserted here by JavaScript -->
-    </tbody>
-  </table>
-</div>
 
-<!-- Arrival Board -->
-<div class="board arrivals">
-  <div class="header">
-    <i class="fas fa-plane-arrival"></i>
-    <h2>Arrivals</h2>
+  <!-- Arrival Board -->
+  <div class="board arrivals">
+    <div class="header">
+      <h2>Arrivals</h2>
+      <div id="icon">
+      <i class="fas fa-plane-arrival"></i>
+      </div>
+    </div>
+    <table>
+      <thead>
+        <tr>
+          <th>Time</th>
+          <th>From</th>
+          <th>Airline</th>
+          <th>Flight</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- Data rows will be inserted here by JavaScript -->
+      </tbody>
+    </table>
   </div>
-  <table>
-    <thead>
-      <tr>
-        <th>Time</th>
-        <th>Airline</th>
-        <th>Flight Number</th>
-        <th>Arriving From</th>
-        <th>Remark</th>
-      </tr>
-    </thead>
-    <tbody>
-      <!-- Data rows will be inserted here by JavaScript -->
-    </tbody>
-  </table>
 </div>
-
-
 
 <script src="js/script.js"></script>
 <script src="js/data.js"></script>
+<script>
+  async function fetchAndUpdateData() {
+    try {
+      const path = window.location.pathname;
+      const icaoCode = path.substring(1);
+
+      const response = await fetch(`/api/flights/${icaoCode}`);
+      const { departures, arrivals } = await response.json();
+
+      const departuresTbody = document.querySelector('.departures tbody');
+      departuresTbody.innerHTML = ''; // Clear existing rows
+      departures.forEach(flight => {
+        const { message, className } = getStatusMessage(flight.location.status, 'departure');
+        const row = `
+            <div class="table-row-container">
+                <table>
+                    <tr>
+                        <td><div>${new Date(flight.departure.departureTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true })}</div></td>
+                        <td><div>${flight.departure.city} (<a href="/${flight.arrival.icao}">${flight.arrival.icao}</a>)</div></td>
+                        <td><div><img src="${flight.aircraft.airlineLogo}" alt="Airline Logo" class="airline-logo"></div></td>
+                        <td><div>${flight.callsign}</div></td>
+                        <td class="${className}"><div>${message}</div></td>
+                    </tr>
+                </table>
+            </div>`;
+        departuresTbody.innerHTML += row;
+      });
+
+
+      const arrivalsTbody = document.querySelector('.arrivals tbody');
+      arrivalsTbody.innerHTML = '';
+      arrivals.forEach(flight => {
+        const { message, className } = getStatusMessage(flight.location.status, 'arrival');
+        const row = `
+            <div class="table-row-container">
+                <table>
+                    <tr>
+                        <td><div>${new Date(flight.arrival.arrivalTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true })}</div></td>
+                        <td><div>${flight.departure.city } (<a href="/${flight.departure.icao}">${flight.departure.icao}</a>)</div></td>
+                        <td><div><img src="${flight.aircraft.airlineLogo}" alt="Airline Logo" class="airline-logo"></div></td>
+                        <td><div>${flight.callsign}</div></td>
+                        <td class="${className}"><div>${message}</div></td>
+                    </tr>
+                </table>
+            </div>`;
+        arrivalsTbody.innerHTML += row;
+      });
+    } catch (error) {
+      console.error('Error fetching or updating flight data:', error);
+    }
+  }
+</script>
