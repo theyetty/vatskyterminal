@@ -106,7 +106,7 @@
                 <table>
                     <tr>
                         <td><div>${new Date(flight.departure.departureTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true })}</div></td>
-                        <td><div>${flight.departure.city} (<a href="/${flight.arrival.icao}">${flight.arrival.icao}</a>)</div></td>
+                        <td><div>${flight.arrival.city} (<a href="/${flight.arrival.icao}">${flight.arrival.icao}</a>)</div></td>
                         <td><div><img src="${flight.aircraft.airlineLogo}" alt="Airline Logo" class="airline-logo"></div></td>
                         <td><div>${flight.callsign}</div></td>
                         <td class="${className}"><div>${message}</div></td>
