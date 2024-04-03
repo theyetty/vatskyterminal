@@ -134,10 +134,14 @@ button:hover {
     font-size: 16px;
   }
 
+  table {
+    width: auto; /* Allows the table to expand as needed */
+  }
+
   #airportInput,
   button,
   #airportSelectionDropdown {
-    font-size: 16px;
+    font-size: 1em;
     width: 100%;
     /* Uniform width for form elements */
     min-height: 40px;
@@ -179,6 +183,60 @@ button:hover {
     flex-basis: 100%;
     margin: 10px;
     /* The max-width is not needed here as we want each board to use all available width */
+  }
+}
+/* Adjustments for smaller screens */
+@media (max-width: 500px) {
+  body {
+    font-size: 20px; /* Increase base font size for better readability */
+  }
+
+  .header {
+    flex-direction: column; /* Stack elements vertically */
+    justify-content: center; /* Center items vertically after stacking */
+    text-align: center; /* Center text for the header elements */
+    padding: 20px 10px; /* Adjust padding for more space */
+  }
+
+  .table-container {
+    overflow-x: auto; /* Enables horizontal scrolling */
+    margin: 0 auto; /* Keeps the container centered */
+    width: 100%; /* Ensures the container takes up the available width */
+  }
+
+  .header h2, .header .icon {
+    margin: 10px 0; /* Add space around header elements when stacked */
+  }
+
+  table, th, td {
+    font-size: 1em; /* Increase font size for table elements */
+  }
+
+  #airportInput, button {
+    font-size: 18px; /* Increase font size for better readability */
+    padding: 15px; /* Increase padding for larger touch targets */
+    margin: 10px 0; /* Increase margin for spacing */
+    width: 100%; /* Use full width to avoid overflow */
+  }
+
+  button {
+    padding: 15px; /* Increase padding for a larger touch area */
+  }
+
+  .boards-container {
+    flex-direction: column; /* Stack boards vertically */
+  }
+
+  .board {
+    width: 100%; /* Full width for each board */
+    margin: 10px 0; /* Add space between stacked boards */
+  }
+
+  /* Ensure all container elements take full width and center their content */
+  .top-container, .center-container, #countdownContainer, .search-container, #main-header {
+    width: 100%; /* Full width */
+    justify-content: center; /* Center content */
+    text-align: center; /* Center align text for consistency */
   }
 }
 
@@ -306,3 +364,4 @@ button {
   padding: 10px 15px;
   /* Adjusts padding for the button for better appearance */
 }
+
