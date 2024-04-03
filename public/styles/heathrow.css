@@ -67,6 +67,10 @@ td {
   background-color: var(--table-row-bg);
   /* Background color for table cells */
 }
+td a {
+  text-decoration: none!important;
+  color:  white;
+}
 
 th {
   text-align: left;
