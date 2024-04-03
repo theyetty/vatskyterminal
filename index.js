@@ -76,10 +76,13 @@ async function getFlight(icao){
                 const departureAirportName = getAirportName(departureAirportData);
                 const departureCountry = getCountryName(departureAirportData);
                 const departureState = getStateName(departureAirportData);
+                const departureCity = getAirportCity(departureAirportData);
         
                 const arrivalAirportName = getAirportName(arrivalAirportData);
                 const arrivalCountry = getCountryName(arrivalAirportData);
                 const arrivalState = getStateName(arrivalAirportData);
+                const arrivalCity = getAirportCity(arrivalAirportData);
+
 
                 const status = getPilotStatus(
                     pilot, 
@@ -104,6 +107,7 @@ async function getFlight(icao){
                         airportName: departureAirportName,
                         country: departureCountry,
                         state: departureState,
+                        city: departureCity ?? departureAirportName,
                         timeLeft: timeRemainingUntilDeparture
                     },
                     arrival: {
@@ -112,6 +116,7 @@ async function getFlight(icao){
                         airportName: arrivalAirportName,
                         country: arrivalCountry,
                         state: arrivalState,
+                        city: arrivalCity ?? arrivalAirportName,
                         timeLeft: timeRemainingToDestination
                     },
                     aircraft: {
@@ -137,8 +142,9 @@ async function getFlight(icao){
                 }
             }
         }
-        departures.sort((b, a) => new Date(a.departure.departureTime) - new Date(b.departure.departureTime));
-        arrivals.sort((b, a) => new Date(a.arrival.arrivalTime) - new Date(b.arrival.arrivalTime));
+        departures.sort((a, b) => new Date(b.departure.departureTime) - new Date(a.departure.departureTime));
+        arrivals.sort((b, a) => new Date(b.arrival.arrivalTime) - new Date(a.arrival.arrivalTime));
+        
         return({ departures, arrivals });
     } catch (error) {
         console.error("Error fetching or processing flight data:", error);
@@ -148,6 +154,9 @@ async function getFlight(icao){
 
 function getAirportName(airportData) {
     return airportData ? airportData.name : "Unknown";
+}
+function getAirportCity(airportData) {
+    return airportData ? airportData.city : "Unknown";
 }
 function getCountryName(airportData) {
     return airportData && Country.getCountryByCode(airportData.country) ? 
