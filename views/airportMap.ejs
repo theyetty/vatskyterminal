@@ -59,19 +59,27 @@
             // Update marker position and popup content
             animateMarkerMovement(markers[flight.cid], flight.location.groundspeed, flight.location.heading, newLatLng);
             markers[flight.cid].setPopupContent(`
+            <center><img src="${flight.aircraft.airlineLogo}"></img><br></center>
             <b>Callsign:</b> ${flight.callsign}<br>
+            <b>Pilot:</b> ${flight.name}</br>
             <b>Speed:</b> ${flight.location.groundspeed} knots<br>
             <b>Altitude:</b> ${flight.location.altitude} feet<br>
-            <b>Aircraft:</b> ${flight.aircraft.name}`
+            <b>Aircraft:</b> ${flight.aircraft.name}<br>
+            <b>Origin:</b> ${flight.departure.airportName}<br>
+            <b>Destination:</b> ${flight.arrival.airportName}`
             );
         } else {
             // Create a new marker
             var marker = L.marker(newLatLng, { icon: planeIcon, rotationAngle: flight.location.heading }).addTo(map);
             marker.bindPopup(`
-            <b>Callsign:</b> ${flight.callsign}
-            <br><b>Speed:</b> ${flight.location.groundspeed} knots<br>
+            <center><img src="${flight.aircraft.airlineLogo}"></img><br></center>
+            <b>Callsign:</b> ${flight.callsign}<br>
+            <b>Pilot:</b> ${flight.name}</br>
+            <b>Speed:</b> ${flight.location.groundspeed} knots<br>
             <b>Altitude:</b> ${flight.location.altitude} feet<br>
-            <b>Aircraft:</b> ${flight.aircraft.name}`
+            <b>Aircraft:</b> ${flight.aircraft.name}<br>
+            <b>Origin:</b> ${flight.departure.airportName}<br>
+            <b>Destination:</b> ${flight.arrival.airportName}`
             );
             markers[flight.cid] = marker;
 
