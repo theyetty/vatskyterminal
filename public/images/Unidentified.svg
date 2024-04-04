@@ -73,7 +73,7 @@
      inkscape:label="Pfade"
      style="display:inline">
     <path
-       style="fill:none;stroke:#000000;stroke-width:0.170023px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       style="fill:white;stroke:#000000;stroke-width:0.170023px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
        d="M 14.618226,0.45432962 13.76811,2.15456 12.917995,6.4051363 12.870748,10.466063 0.16626549,16.60652 v 1.70023 l 12.79897651,-2.078538 0.244683,5.393125 -4.5425066,2.636221 v 0.850115 l 5.1006916,-0.850115 0.850116,1.70023 0.850115,-1.70023 5.100691,0.850115 v -0.850115 l -4.499569,-2.550346 0.201746,-5.431753 12.798977,2.031291 V 16.60652 L 16.223962,10.51331 16.318456,6.4051363 15.468341,2.15456 Z"
        id="path1459"
        sodipodi:nodetypes="ccccccccccccccccccccccc" />
