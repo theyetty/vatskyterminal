@@ -128,7 +128,10 @@ async function getFlight(icao){
                     location: {
                         altitude: pilot.altitude,
                         groundspeed: pilot.groundspeed,
-                        status
+                        status,
+                        longitude: pilot.longitude,
+                        latitude: pilot.latitude,
+                        heading: pilot.heading
                     }
                 };
 
@@ -155,6 +158,20 @@ async function getFlight(icao){
 function getAirportName(airportData) {
     return airportData ? airportData.name : "Unknown";
 }
+function getAirportLocation(airportData) {
+    if (airportData) {
+        return {
+            lat: airportData.lat,
+            lng: airportData.lon
+        };
+    } else {
+        return {
+            lat: 0,
+            lng: 0
+        };
+    }
+}
+
 function getAirportCity(airportData) {
     return airportData ? airportData.city : "Unknown";
 }
@@ -188,7 +205,69 @@ app.get('/:icao', async (req, res) => {
     }
 });
 
+app.get('/:icao/map', async (req, res) => {
+    const icao = req.params.icao.toUpperCase();
+    const allAirports = await fetchAllAirports(); 
+    const location = getAirportLocation(allAirports[icao]);
+    let center;
 
+        center = {
+            lat: location.lat,
+            lng: location.lng
+        };
+
+    try {
+        const flightData = await getFlight(icao);
+
+        res.render('airportMap', { flightData, icao, center, selectedCallsign: '' });
+
+
+    } catch (error) {
+        console.error("Error fetching flight data for ICAO:", icao, error);
+        res.status(500).send('Error fetching flight data for map view');
+    }
+});
+
+
+app.get('/:icao/map/:callsign', async (req, res) => {
+    const icao = req.params.icao.toUpperCase();
+    const callsign = req.params.callsign.toUpperCase();
+
+    try {
+        const flightData = await getFlight(icao); // Assuming this returns all flight data for the airport
+
+        let center;
+        const specificFlight = flightData.departures.concat(flightData.arrivals).find(flight => flight.callsign === callsign);
+
+        if (specificFlight) {
+            // Use the specific flight's coordinates if found
+            center = { lat: specificFlight.location.latitude, lng: specificFlight.location.longitude };
+        } else {
+            // If no specific flight found, try to use the first available flight from departures or arrivals
+            const firstAvailableFlight = flightData.departures[0] || flightData.arrivals[0];
+
+            if (firstAvailableFlight) {
+                // Assuming departure or arrival airport of the first flight can represent the airport coordinates
+                center = firstAvailableFlight.departure.icao === icao 
+                    ? { lat: firstAvailableFlight.departure.latitude, lng: firstAvailableFlight.departure.longitude }
+                    : { lat: firstAvailableFlight.arrival.latitude, lng: firstAvailableFlight.arrival.longitude };
+            } else {
+                // Fallback coordinates if no flights are found (you might want to handle this case differently)
+                center = { lat: 0, lng: 0 }; // Default or error coordinates
+            }
+        }
+
+        res.render('airportMap', { 
+            flightData, 
+            icao, 
+            center: center,
+            selectedCallsign: callsign ? callsign : null 
+        });
+    } catch (error) {
+        console.error("Error fetching flight data:", error);
+        res.status(500).send('Error fetching flight data for map view');
+    }
+});
 
 app.get('/', (req, res) => {
     res.render('index');
