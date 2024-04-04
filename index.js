@@ -216,7 +216,6 @@ app.get('/:icao/map', async (req, res) => {
             lng: location.lng
         };
 
-        console.log(center)
     try {
         const flightData = await getFlight(icao);
 
@@ -228,8 +227,6 @@ app.get('/:icao/map', async (req, res) => {
         res.status(500).send('Error fetching flight data for map view');
     }
 });
-
-
 
 
 app.get('/:icao/map/:callsign', async (req, res) => {
