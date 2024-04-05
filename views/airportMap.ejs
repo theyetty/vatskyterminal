@@ -22,7 +22,7 @@
     <script src="https://cdn.jsdelivr.net/npm/leaflet-rotatedmarker@0.2.0/leaflet.rotatedMarker.min.js"></script>
     <script>
         var mapCenter = { lat: <%= center.lat %>, lng: <%= center.lng %> };// Use EJS syntax to output as unescaped data
-        var map = L.map('mapid').setView([mapCenter.lat, mapCenter.lng], 12);
+        var map = L.map('mapid').setView([mapCenter.lat, mapCenter.lng], 8);
         L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', { maxZoom: 19 }).addTo(map);
 
 
@@ -43,69 +43,53 @@
             const flightData = await response.json();
 
             for (const flight of flightData.departures.concat(flightData.arrivals)) {
-        const newLatLng = L.latLng(flight.location.latitude, flight.location.longitude);
-        const iconUrl = await getAircraftIconUrl(flight.aircraft.name); // Now you can use await here
-        console.log(iconUrl);
+                const newLatLng = L.latLng(flight.location.latitude, flight.location.longitude);
 
-        var planeIcon = L.icon({
-            iconUrl: iconUrl,
-            iconSize: [50, 50],
-            iconAnchor: [25, 25],
-            popupAnchor: [1, -24] // Adjusted for demonstration
-        });
+                var planeIcon = L.icon({
+                    iconUrl: flight.aircraft.aircraftIcon,
+                    iconSize: [50, 50],
+                    iconAnchor: [25, 25],
+                    popupAnchor: [1, -24] // Adjusted for demonstration
+                });
 
-        // Check if marker exists and update or create a new one
-        if (markers[flight.cid]) {
-            // Update marker position and popup content
-            animateMarkerMovement(markers[flight.cid], flight.location.groundspeed, flight.location.heading, newLatLng);
-            markers[flight.cid].setPopupContent(`
-            <center><img src="${flight.aircraft.airlineLogo}"></img><br></center>
-            <b>Callsign:</b> ${flight.callsign}<br>
-            <b>Pilot:</b> ${flight.name}</br>
-            <b>Speed:</b> ${flight.location.groundspeed} knots<br>
-            <b>Altitude:</b> ${flight.location.altitude} feet<br>
-            <b>Aircraft:</b> ${flight.aircraft.name}<br>
-            <b>Origin:</b> ${flight.departure.airportName}<br>
-            <b>Destination:</b> ${flight.arrival.airportName}`
-            );
-        } else {
-            // Create a new marker
-            var marker = L.marker(newLatLng, { icon: planeIcon, rotationAngle: flight.location.heading }).addTo(map);
-            marker.bindPopup(`
-            <center><img src="${flight.aircraft.airlineLogo}"></img><br></center>
-            <b>Callsign:</b> ${flight.callsign}<br>
-            <b>Pilot:</b> ${flight.name}</br>
-            <b>Speed:</b> ${flight.location.groundspeed} knots<br>
-            <b>Altitude:</b> ${flight.location.altitude} feet<br>
-            <b>Aircraft:</b> ${flight.aircraft.name}<br>
-            <b>Origin:</b> ${flight.departure.airportName}<br>
-            <b>Destination:</b> ${flight.arrival.airportName}`
-            );
-            markers[flight.cid] = marker;
+                // Check if marker exists and update or create a new one
+                if (markers[flight.cid]) {
+                    // Update marker position and popup content
+                    animateMarkerMovement(markers[flight.cid], flight.location.groundspeed, flight.location.heading, newLatLng);
+                    markers[flight.cid].setPopupContent(`
+                        <center><img src="${flight.aircraft.airlineLogo}"></img><br></center>
+                        <b>Callsign:</b> ${flight.callsign}<br>
+                        <b>Pilot:</b> ${flight.name}</br>
+                        <b>Speed:</b> ${flight.location.groundspeed} knots<br>
+                        <b>Altitude:</b> ${flight.location.altitude} feet<br>
+                        <b>Aircraft:</b> ${flight.aircraft.name}<br>
+                        <b>Origin:</b> ${flight.departure.airportName}<br>
+                        <b>Destination:</b> ${flight.arrival.airportName}`
+                    );
+                } else {
+                    // Create a new marker
+                    var marker = L.marker(newLatLng, { icon: planeIcon, rotationAngle: flight.location.heading }).addTo(map);
+                    marker.bindPopup(`
+                        <center><img src="${flight.aircraft.airlineLogo}"></img><br></center>
+                        <b>Callsign:</b> ${flight.callsign}<br>
+                        <b>Pilot:</b> ${flight.name}</br>
+                        <b>Speed:</b> ${flight.location.groundspeed} knots<br>
+                        <b>Altitude:</b> ${flight.location.altitude} feet<br>
+                        <b>Aircraft:</b> ${flight.aircraft.name}<br>
+                        <b>Origin:</b> ${flight.departure.airportName}<br>
+                        <b>Destination:</b> ${flight.arrival.airportName}`
+                    );
+                    markers[flight.cid] = marker;
 
-            if (flight.callsign === selectedCallsign) {
-                marker.openPopup();
+                    if (flight.callsign === selectedCallsign) {
+                        marker.openPopup();
+                    }
+                    animateMarkerMovement(marker, flight.location.groundspeed, flight.location.heading, newLatLng);
+                }
             }
-            animateMarkerMovement(marker, flight.location.groundspeed, flight.location.heading, newLatLng);
-        }
-    }
         }
 
-        
-        async function getAircraftIconUrl(aircraftName) {
-            const typeCode = aircraftName.split('/')[0];
-            const imageUrl = `/images/${typeCode}.svg`;
 
-
-            const defaultUrl = '/images/Unidentified.svg'; // Path to your default image
-
-            return new Promise((resolve) => {
-                let imageTest = new Image();
-                imageTest.src = imageUrl;
-                imageTest.onload = () => resolve(imageUrl);
-                imageTest.onerror = () => resolve(defaultUrl);
-            });
-        }
 
         function animateMarkerMovement(marker, speedKnots, heading, initialLatLng) {
             marker.setLatLng(initialLatLng); // Set the marker's initial position

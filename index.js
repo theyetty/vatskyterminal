@@ -1,6 +1,7 @@
 const express = require('express');
 const path = require('path');
 const fs = require('fs');
+const fsp = require('fs').promises; // Import the promise-based methods
 const cors = require('cors');
 const { fetchVatsimData } = require('./services/vatsimService');
 const {  searchAirports, fetchAllAirports } = require('./services/airportService');
@@ -95,7 +96,9 @@ async function getFlight(icao){
                 );
                 const airlineIcao = pilot.callsign.substring(0, 3).toUpperCase();
                 const airlineData = allAirlines[airlineIcao];
+                const aircraftTypeCode = pilot.flight_plan.aircraft.split('/')[0];
 
+                const aircraftIcon = await checkAircraftImageExists(aircraftTypeCode);
 
                 let flight = {
                     cid: pilot.cid,
@@ -122,8 +125,8 @@ async function getFlight(icao){
                     aircraft: {
                         name: pilot.flight_plan.aircraft,
                         airlineName: airlineData ? airlineData.name : null,
-                        airlineLogo: airlineData?.logo ?? 'https://images.kiwi.com/airlines/64x64/airlines.png'
-    
+                        airlineLogo: airlineData?.logo ?? 'https://images.kiwi.com/airlines/64x64/airlines.png',
+                        aircraftIcon: aircraftIcon
                     },
                     location: {
                         altitude: pilot.altitude,
@@ -152,6 +155,16 @@ async function getFlight(icao){
     } catch (error) {
         console.error("Error fetching or processing flight data:", error);
         return {};
+    }
+}
+
+async function checkAircraftImageExists(typeCode) {
+    const imagePath = path.join(__dirname, '/public/images/', `${typeCode}.svg`);
+    try {
+        await fsp.access(imagePath);
+        return `/images/${typeCode}.svg`; // Return the relative path if the file exists
+    } catch (error) {
+        return '/images/Unidentified.svg'; // Return the default image path if the file does not exist
     }
 }
 
@@ -188,6 +201,9 @@ function getStateName(airportData) {
     }
     return "Unknown State";
 }
+app.get('/privacy-policy', (req, res) => {
+    res.render('privacy');
+});
 
 app.get('/:icao', async (req, res) => {
     const icao = req.params.icao.toUpperCase();
@@ -241,7 +257,7 @@ app.get('/:icao/map/:callsign', async (req, res) => {
 
         if (specificFlight) {
             // Use the specific flight's coordinates if found
-            center = { lat: specificFlight.location.latitude, lng: specificFlight.location.longitude };
+            center = { lat: specificFlight.location.latitude  + 0.05, lng: specificFlight.location.longitude };
         } else {
             // If no specific flight found, try to use the first available flight from departures or arrivals
             const firstAvailableFlight = flightData.departures[0] || flightData.arrivals[0];
@@ -249,8 +265,8 @@ app.get('/:icao/map/:callsign', async (req, res) => {
             if (firstAvailableFlight) {
                 // Assuming departure or arrival airport of the first flight can represent the airport coordinates
                 center = firstAvailableFlight.departure.icao === icao 
-                    ? { lat: firstAvailableFlight.departure.latitude, lng: firstAvailableFlight.departure.longitude }
-                    : { lat: firstAvailableFlight.arrival.latitude, lng: firstAvailableFlight.arrival.longitude };
+                    ? { lat: firstAvailableFlight.departure.latitude  + 0.05, lng: firstAvailableFlight.departure.longitude }
+                    : { lat: firstAvailableFlight.arrival.latitude  + 0.05, lng: firstAvailableFlight.arrival.longitude };
             } else {
                 // Fallback coordinates if no flights are found (you might want to handle this case differently)
                 center = { lat: 0, lng: 0 }; // Default or error coordinates

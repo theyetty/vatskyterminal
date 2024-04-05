@@ -1,40 +1,65 @@
 <!DOCTYPE html>
 <html lang="en">
-    
+
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">        
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="/styles/heathrow.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css">
 
     <title>Home</title>
     <style>
-        body { 
-            display: flex; 
-            justify-content: center; 
-            align-items: center; 
-            height: 100vh; 
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
             flex-direction: column;
         }
-        input, button {
+        #content {
+            padding: 10px;
+            text-align: center;
+        }
+        input,
+        button {
             margin: 5px;
             padding: 10px;
         }
+        #footer{
+            font-size: 12px;
+        }
+        a {
+            text-decoration: none;
+            color: white;
+        }
     </style>
 </head>
-<h1> Airport Sky Terminal</h1>
-<p> Please search for an airport below...</p>
-<body>
-    <form id="airport-search-form">
-        <input type="text" id="airportInput" placeholder="Search for an airport...">
-        <button type="submit">Search</button>
-    </form>
-    
-    <div id="airportSelectionMessage" style="display: none;">Multiple airports found, please select one:</div>
-    <select id="airportSelection" style="display: none;"></select>
-    <button id="selectAirportButton" style="display: none;">Go to Airport</button>
-    
-    
-    <script src="js/script.js"></script>
-      
+<div id="content">
+    <h1> Vatsim Sky Terminal</h1>
+    <p> Please search for an airport below using name or ICAO...</p>
+
+    <body>
+        <form id="airport-search-form">
+            <input type="text" id="airportInput" placeholder="Search for an airport...">
+            <button type="submit">Search</button>
+        </form>
+
+        <div id="airportSelectionMessage" style="display: none;">Multiple airports found, please select one:</div>
+        <select id="airportSelection" style="display: none;"></select>
+        <button id="selectAirportButton" style="display: none;">Go to Airport</button>
+        <br>
+        <div id="footer">
+            <p>This is a community run project</p>
+            <a href="https://github.com/theyetty/vatskyterminal" target="_blank" class="github-link">
+                <i class="fab fa-github"></i> Contribute on GitHub
+            </a>
+
+
+        </div>
+  
+</div>
+<script src="js/script.js"></script>
+
 </body>
+
 </html>
