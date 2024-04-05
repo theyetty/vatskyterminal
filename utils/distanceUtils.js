@@ -33,7 +33,7 @@ function calculateNewArrivalTime(distanceToArrival, pilot) {
     const newArrivalTime = new Date(plannedTime.getTime() + (durationHours * 60 * 60 * 1000));
 
     // Add grace period of 20 minutes to the planned arrival time
-    const plannedTimeWithGrace = new Date(plannedTime.getTime() + (20 * 60 * 1000));
+    const plannedTimeWithGrace = new Date(plannedTime.getTime() + (5 * 60 * 1000));
 
     // Check if the new arrival time is within the grace period
     const delayed = newArrivalTime > plannedTimeWithGrace;
@@ -91,10 +91,8 @@ function getPilotStatus(
     
 
     // In the air
-    if (isInAir && distanceToDeparture > threshold && distanceToArrival > threshold ) {
-
-        // If the plane is within 120 minutes lets work out if its delayed
-        if(timeRemainingToDestination < 120 && timeRemainingToDestination < 0){
+    if (isInAir && isMoving) {
+        if(timeRemainingToDestination < 0){
             const newArrivalEstimation = calculateNewArrivalTime(distanceToArrival, pilot);
             if (newArrivalEstimation.delayed) {
                 return { statusText: `EN_ROUTE_DELAYED`, delayMinutes: newArrivalEstimation.minsFromNow, newETA: newArrivalEstimation.newETA };
@@ -122,7 +120,7 @@ function getPilotStatus(
                 if (isMoving) {
                     return { statusText: isFlying ? `ARRIVAL_FLYING_DELAYED` : `ARRIVAL_TAXI_DELAYED`, delayMinutes: newArrivalEstimation.minsFromNow, newETA: newArrivalEstimation.newETA };
                 } else {
-                    return { statusText: `ARRIVAL_DELAYED`, delayMinutes: newArrivalEstimation.minsFromNow, newETA: newArrivalEstimation.newETA };
+                    return { statusText: `ARRIVAL_GATE`, delayMinutes: newArrivalEstimation.minsFromNow, newETA: newArrivalEstimation.newETA };
                 }
             } else {
                 if (isMoving) {

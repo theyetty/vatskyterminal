@@ -39,32 +39,16 @@ function calculateExpectedArrivalUTC(deptime, enrouteTime) {
 }
 
 
-function calculateTimeRemaining(arrivalTimeUTC, deptime, logonTime) {
-    const now = new Date();
+function calculateTimeRemainingTillDestination(expectedArrivalUTC) {
+    const now = new Date(); // Current UTC time
+    const expectedArrivalDate = new Date(expectedArrivalUTC); // Convert expectedArrivalUTC to a Date object
 
-    const deptimeHours = parseInt(deptime.substring(0, 2), 10);
-    const deptimeMinutes = parseInt(deptime.substring(2, 4), 10);
+    // Calculate the time difference in minutes
+    let timeDiff = (expectedArrivalDate - now) / 60000; // Convert milliseconds to minutes
 
-    const deptimeDate = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate(),
-                                          deptimeHours, deptimeMinutes));
-
-    const logonTimeDate = new Date(logonTime);
-
-    const arrivalHours = parseInt(arrivalTimeUTC.substring(0, 2), 10);
-    const arrivalMinutes = parseInt(arrivalTimeUTC.substring(3, 5), 10);
-
-    const arrivalTimeDate = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate(),
-                                              arrivalHours, arrivalMinutes));
-
-    if (deptimeDate > now && logonTimeDate.getUTCDate() < now.getUTCDate()) {
-        deptimeDate.setUTCDate(deptimeDate.getUTCDate() - 1); // Set deptime to yesterday
-        arrivalTimeDate.setUTCDate(arrivalTimeDate.getUTCDate() - 1); // Set arrivalTime to yesterday
-    }
-
-    let timeDiff = (arrivalTimeDate.getTime() - now.getTime()) / 60000; // Convert milliseconds to minutes
-
-    return Math.floor(timeDiff);
+    return Math.round(timeDiff); // Round the result to avoid fractional minutes
 }
+
 function calculateTimeRemainingTillDeparture(deptime) {
     const now = new Date(); // Current time
 
@@ -92,7 +76,7 @@ module.exports = {
     hhmmToUTCTime,
     UTCTimeToHHMM,
     calculateExpectedArrivalUTC,
-    calculateTimeRemaining,
+    calculateTimeRemainingTillDestination,
     calculateTimeRemainingTillDeparture
 };
 
