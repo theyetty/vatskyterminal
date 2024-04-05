@@ -65,11 +65,34 @@ function calculateTimeRemaining(arrivalTimeUTC, deptime, logonTime) {
 
     return Math.floor(timeDiff);
 }
+function calculateTimeRemainingTillDeparture(deptime) {
+    const now = new Date(); // Current time
+
+    // Extract hours and minutes from deptime
+    const deptimeHours = parseInt(deptime.substring(0, 2), 10);
+    const deptimeMinutes = parseInt(deptime.substring(2), 10);
+
+    // Create a Date object for deptime on the same day as 'now'
+    let deptimeDate = new Date(now);
+    deptimeDate.setUTCHours(deptimeHours, deptimeMinutes, 0, 0); // Setting to deptime
+
+    // Calculate the difference in minutes between now and the deptime
+    let timeDiff = (deptimeDate - now) / 60000; // Convert from milliseconds to minutes
+
+    // If the difference is negative, it means deptime has already passed
+    if (timeDiff < 0) {
+    }
+
+    return Math.round(timeDiff); // Round the result to avoid fractional minutes
+}
+
+
 
 module.exports = {
     hhmmToUTCTime,
     UTCTimeToHHMM,
     calculateExpectedArrivalUTC,
     calculateTimeRemaining,
+    calculateTimeRemainingTillDeparture
 };
 
