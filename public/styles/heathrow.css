@@ -351,3 +351,23 @@ iframe {
 	visibility: hidden;
 	/* Initially hidden */
 }
+.site-footer {
+  text-align: center;
+  padding: 20px 0;
+  margin-top: 20px;
+}
+
+.footer-content p, .footer-content a {
+  color: grey; /* Dark text color */
+  margin: 0 10px;
+  font-size: 16px;
+}
+
+.github-link {
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.github-link .fab {
+  margin-right: 5px;
+}

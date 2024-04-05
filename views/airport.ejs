@@ -101,6 +101,15 @@
     </div>
   </div>
 </div>
+<footer class="site-footer">
+  <div class="footer-content">
+      <p>This site is a community project not associated or endorsed by VATSIM.</p>
+      <a href="/privacy-policy">Privacy Policy</a>
+      <a href="https://github.com/theyetty/vatskyterminal" target="_blank" class="github-link">
+          <i class="fab fa-github"></i> Contribute on GitHub
+      </a>
+  </div>
+</footer>
 
 <script src="js/script.js"></script>
 <script src="js/data.js"></script>
@@ -161,10 +170,14 @@
     const modal = document.getElementById('flightModal');
     const frame = document.getElementById('flightFrame');
     const loadingIndicator = document.getElementById('loadingIndicator');
-    frame.src = `/${icao}/map/${callsign}`;
+
+    const url = `/${encodeURIComponent(icao)}/map/${encodeURIComponent(callsign)}`;
+    frame.src = url;
+    
     loadingIndicator.style.display = 'block'; // Show loading indicator
     modal.style.display = 'block';
   }
+
   function iframeLoaded() {
     const loadingIndicator = document.getElementById('loadingIndicator');
     const frame = document.getElementById('flightFrame');

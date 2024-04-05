@@ -201,6 +201,9 @@ function getStateName(airportData) {
     }
     return "Unknown State";
 }
+app.get('/privacy-policy', (req, res) => {
+    res.render('privacy');
+});
 
 app.get('/:icao', async (req, res) => {
     const icao = req.params.icao.toUpperCase();
