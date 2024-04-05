@@ -7,7 +7,7 @@ const { fetchVatsimData } = require('./services/vatsimService');
 const {  searchAirports, fetchAllAirports } = require('./services/airportService');
 const { fetchAllAirlines } = require('./services/airlineService');
 const { getPilotStatus } = require('./utils/distanceUtils');
-const { calculateExpectedArrivalUTC, hhmmToUTCTime,UTCTimeToHHMM, calculateTimeRemaining } = require('./utils/dateUtils');
+const { calculateExpectedArrivalUTC, hhmmToUTCTime,UTCTimeToHHMM, calculateTimeRemaining, calculateTimeRemainingTillDeparture } = require('./utils/dateUtils');
 const { Country, State } = require('country-state-city');
 
 const app = express();
@@ -69,7 +69,7 @@ async function getFlight(icao){
 
 
                 const timeRemainingToDestination = calculateTimeRemaining(UTCTimeToHHMM(expectedArrivalUTC), pilot.flight_plan.deptime, pilot.logon_time);
-                const timeRemainingUntilDeparture = calculateTimeRemaining(departureTime, departureTime, pilot.logon_time);
+                const timeRemainingUntilDeparture = calculateTimeRemainingTillDeparture(departureTime);
 
                 const departureAirportData = allAirports[pilot.flight_plan.departure.toUpperCase()];
                 const arrivalAirportData = allAirports[pilot.flight_plan.arrival.toUpperCase()];
