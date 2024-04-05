@@ -3,15 +3,15 @@ function calculateDistance(lat1, lon1, lat2, lon2) {
     const dLat = (lat2 - lat1) * Math.PI / 180;
     const dLon = (lon2 - lon1) * Math.PI / 180;
     const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-              Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * 
-              Math.sin(dLon / 2) * Math.sin(dLon / 2);
+        Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+        Math.sin(dLon / 2) * Math.sin(dLon / 2);
     const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
     return R * c; // Distance in kilometers
 }
 
 function calculateRemainingFlightTime(distance, groundSpeed) {
-    if (groundSpeed <= 0) return Infinity; 
-    return (distance / groundSpeed) * 60; 
+    if (groundSpeed <= 0) return Infinity;
+    return (distance / groundSpeed) * 60;
 }
 function calculateNewArrivalTime(distanceToArrival, pilot) {
     // Create current date and time object 
@@ -33,7 +33,7 @@ function calculateNewArrivalTime(distanceToArrival, pilot) {
     const newArrivalTime = new Date(plannedTime.getTime() + (durationHours * 60 * 60 * 1000));
 
     // Add grace period of 20 minutes to the planned arrival time
-    const plannedTimeWithGrace = new Date(plannedTime.getTime() + (5 * 60 * 1000));
+    const plannedTimeWithGrace = new Date(plannedTime.getTime() + (20 * 60 * 1000));
 
     // Check if the new arrival time is within the grace period
     const delayed = newArrivalTime > plannedTimeWithGrace;
@@ -52,18 +52,15 @@ function calculateNewArrivalTime(distanceToArrival, pilot) {
 
 
 
-
-
-
-
 function getPilotStatus(
-    pilot, 
-    departureAirport, 
-    arrivalAirport, 
-    threshold, 
-    timeRemainingUntilDeparture, 
-    timeRemainingToDestination
-    ) {
+    pilot,
+    departureAirport,
+    arrivalAirport,
+    threshold,
+    timeRemainingUntilDeparture,
+    timeRemainingToDestination,
+    expectedArrivalUTC
+) {
     if (!departureAirport && !arrivalAirport) {
         return { statusText: 'UNKNOWN_LOCATION', delayMinutes: 0 };
     }
@@ -80,57 +77,60 @@ function getPilotStatus(
         return { statusText: 'DEPARTURE_DELAYED', delayMinutes: delayMinutes };
     }
 
-    if(distanceToDeparture < threshold && pilot.groundspeed == 0){
+    if (distanceToDeparture < threshold && pilot.groundspeed == 0) {
         return { statusText: 'DEPARTURE_GATE' };
     }
 
-    if(distanceToDeparture < threshold && pilot.groundspeed > 0){
+    if (distanceToDeparture < threshold && pilot.groundspeed > 0) {
         return { statusText: 'DEPARTURE_TAXI' };
     }
 
-    
+
+
+    // Define a delay threshold in minutes
+    const DELAY_THRESHOLD = 20;
 
     // In the air
     if (isInAir && isMoving) {
-        if(timeRemainingToDestination < 0){
-            const newArrivalEstimation = calculateNewArrivalTime(distanceToArrival, pilot);
-            if (newArrivalEstimation.delayed) {
-                return { statusText: `EN_ROUTE_DELAYED`, delayMinutes: newArrivalEstimation.minsFromNow, newETA: newArrivalEstimation.newETA };
-            } else if (timeRemainingToDestination >= 0 && timeRemainingToDestination < 30) {
-                return { statusText: 'EN_ROUTE_EARLY', delayMinutes: 0 };
-            }
-        }
-        // Call calculateNewArrivalTime to determine if the flight will be delayed
+        const newArrivalEstimation = calculateNewArrivalTime(distanceToArrival, pilot);
+        const scheduledArrivalDate = new Date(expectedArrivalUTC);
+        const newETA = new Date(newArrivalEstimation.newETA);
 
-        return { statusText: 'EN_ROUTE', delayMinutes: 0 };
+        const delayMinutes = Math.round((newETA - scheduledArrivalDate) / 1000 / 60);
+
+        if (delayMinutes > DELAY_THRESHOLD) {
+            // Flight is delayed beyond the threshold
+            return { statusText: `EN_ROUTE_DELAYED`, delayMinutes: delayMinutes, newETA: newArrivalEstimation.newETA };
+        } else if (delayMinutes < -DELAY_THRESHOLD) {
+            // Flight is arriving early, beyond the threshold
+            return { statusText: 'EN_ROUTE_EARLY', delayMinutes: delayMinutes };
+        } else {
+            // Flight is within the delay threshold, considered on time
+            return { statusText: 'EN_ROUTE_ON_TIME', delayMinutes: 0 };
+        }
     }
 
-
-    // At the arrival airport
     // At the arrival airport
     if (distanceToArrival <= threshold) {
-        // Call calculateNewArrivalTime to determine if the flight will be delayed
         const newArrivalEstimation = calculateNewArrivalTime(distanceToArrival, pilot);
         const isFlying = pilot.groundspeed > 50; // Above 50 knots means still flying
-        if (newArrivalEstimation.delayed) {
-            return { statusText: isFlying ? `ARRIVAL_FLYING_DELAYED` : `ARRIVAL_TAXI_DELAYED`, delayMinutes: newArrivalEstimation.minsFromNow, newETA: newArrivalEstimation.newETA };
+        const scheduledArrivalDate = new Date(expectedArrivalUTC);
+        const newETA = new Date(newArrivalEstimation.newETA);
+
+        const delayMinutes = Math.round((newETA - scheduledArrivalDate) / 1000 / 60);
+
+        if (delayMinutes > DELAY_THRESHOLD) {
+            // Flight is delayed beyond the threshold
+            return { statusText: isFlying ? `ARRIVAL_FLYING_DELAYED` : `ARRIVAL_TAXI_DELAYED`, delayMinutes: delayMinutes, newETA: newArrivalEstimation.newETA };
+        } else if (delayMinutes < -DELAY_THRESHOLD) {
+            // Flight is arriving early, beyond the threshold
+            return { statusText: isFlying ? 'ARRIVAL_FLYING_EARLY' : 'ARRIVAL_TAXI_EARLY', delayMinutes: delayMinutes };
         } else {
-            if (timeRemainingToDestination < 0) {
-                const delayMinutes = Math.abs(timeRemainingToDestination);
-                if (isMoving) {
-                    return { statusText: isFlying ? `ARRIVAL_FLYING_DELAYED` : `ARRIVAL_TAXI_DELAYED`, delayMinutes: newArrivalEstimation.minsFromNow, newETA: newArrivalEstimation.newETA };
-                } else {
-                    return { statusText: `ARRIVAL_GATE`, delayMinutes: newArrivalEstimation.minsFromNow, newETA: newArrivalEstimation.newETA };
-                }
-            } else {
-                if (isMoving) {
-                    return { statusText: isFlying ? 'ARRIVAL_FLYING' : 'ARRIVAL_TAXI', delayMinutes: 0 };
-                } else {
-                    return { statusText: 'ARRIVAL_GATE', delayMinutes: 0 };
-                }
-            }
+            // Flight is within the delay threshold, considered on time
+            return { statusText: isFlying ? 'ARRIVAL_FLYING_ON_TIME' : 'ARRIVAL_GATE_ON_TIME', delayMinutes: 0 };
         }
     }
+
 
     return { statusText: 'UNKNOWN_STATUS', delayMinutes: 0 };
 }
