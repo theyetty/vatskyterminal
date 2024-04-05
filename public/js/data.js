@@ -48,17 +48,22 @@ function getStatusMessage(status, flightPhase) {
             case 'ARRIVAL_TAXI_DELAYED':
                  message = `Taxing to gate (${status.delayMinutes} minute delay)`;
             case 'ARRIVAL_TAXI':
+            case 'ARRIVAL_TAXI_EARLY':
                 message = 'Taxing to gate';
                 className = 'white';
             case 'ARRIVAL_GATE':
+            case 'ARRIVAL_GATE_ON_TIME':
                 message = 'Arrived at gate';
                 className = 'white';
                 break;
-            case 'EN_ROUTE_EARLY':
+            case 'ARRIVAL_FLYING_EARLY':
                 message = 'Arriving Early';
                 className = 'status-early';
                 break;
             case 'EN_ROUTE':
+            case 'EN_ROUTE_EARLY':
+            case 'EN_ROUTE_ON_TIME':
+            case 'ARRIVAL_FLYING_ON_TIME':
                 message = 'En-Route';
                 className = 'white';
                 break;
